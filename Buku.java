@@ -8,7 +8,7 @@ public class Buku {
     private double harga;
     private int stok;
 
-    private KategoriBuku kategori;
+    private kategoriBuku kategori;
 
     public Buku(String idBuku, String judul, String penulis, String penerbit,
                 int tahunTerbit, double harga, int stok, KategoriBuku kategori) {
