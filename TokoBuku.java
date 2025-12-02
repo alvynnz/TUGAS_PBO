@@ -4,7 +4,7 @@ import java.util.List;
 public class TokoBuku {
     private List<Buku> inventoriBuku = new ArrayList<>();
     private List<Pelanggan> daftarPelanggan = new ArrayList<>();
-    private List<TransaksiPenjualan> riwayatTransaksi = new ArrayList<>();
+    private List<Transaksi_penjualan> riwayatTransaksi = new ArrayList<>();
 
     public void tambahBuku(Buku baru) {
         inventoriBuku.add(baru);
@@ -20,7 +20,7 @@ public class TokoBuku {
         return null;
     }
 
-    public void prosesTransaksi(TransaksiPenjualan t) {
+    public void prosesTransaksi(Transaksi_penjualan t) {
         riwayatTransaksi.add(t);
         System.out.println("Transaksi berhasil disimpan!");
     }
@@ -37,7 +37,7 @@ public class TokoBuku {
         daftarPelanggan.add(p);
     }
 
-    public List<TransaksiPenjualan> getRiwayatTransaksi() {
+    public List<Transaksi_penjualan> getRiwayatTransaksi() {
         return riwayatTransaksi;
     }
 }

@@ -42,4 +42,3 @@ public class Transaksi_penjualan {
         System.out.println("\nTOTAL BAYAR : " + hitungTotal());
     }
 }
-

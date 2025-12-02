@@ -1,38 +1,43 @@
-public class Kasir{
-    private int Id_kasir;
-    private String nama_kasir;
-    private UserSystem_user;
+public class Kasir {
+    private int idKasir;
+    private String namaKasir;
+    private UserSystem user;
 
-    public kasir (int Id_kasir String nama_kasir, UserSystem_user){
-        this.Id_kasir=Id_kasir;
-        this.nama_kasir=nama_kasir;
-        this.user=user;
-    }
-    public int get Id_kasir(){
-        retrun Id_kasir;
-
-    }
-    public void set Id_kasir(int Id_kasir){
-        this.Id_kasir=Id_kasir
-
-    }
-    public String get nama_kasir(){
-        retrun nama_kasir;
-    }
-    public void set nama_kasir(String nama_kasir){
-        this.nama_kasir=nama_kasir;
-    }
-    public UserSystem_user get user(){
-        retrun user;
-    }
-    public void set user (UserSystem_user){
-        this.user=user;
+    public Kasir(int idKasir, String namaKasir, UserSystem user) {
+        this.idKasir = idKasir;
+        this.namaKasir = namaKasir;
+        this.user = user;
     }
 
-    public String get infokasir(){
-        retrun "kasir {" + "id = " + Id_kasir + "nama= " nama_kasir + + "user= " + user getusername()+ +
-        "}";
+    public int getIdKasir() {
+        return idKasir;
     }
 
+    public void setIdKasir(int idKasir) {
+        this.idKasir = idKasir;
+    }
 
+    public String getNamaKasir() {
+        return namaKasir;
+    }
+
+    public void setNamaKasir(String namaKasir) {
+        this.namaKasir = namaKasir;
+    }
+
+    public UserSystem getUser() {
+        return user;
+    }
+
+    public void setUser(UserSystem user) {
+        this.user = user;
+    }
+
+    public String getInfoKasir() {
+        return "Kasir { " +
+                "ID = " + idKasir +
+                ", Nama = " + namaKasir +
+                ", User = " + user.getUsername() +
+                " }";
+    }
 }

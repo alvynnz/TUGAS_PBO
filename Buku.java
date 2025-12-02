@@ -8,7 +8,7 @@ public class Buku {
     private double harga;
     private int stok;
 
-    private kategoriBuku kategori;
+    private KategoriBuku kategori;
 
     public Buku(String idBuku, String judul, String penulis, String penerbit,
                 int tahunTerbit, double harga, int stok, KategoriBuku kategori) {
@@ -95,7 +95,6 @@ public class Buku {
         System.out.println("Tahun Terbit: " + tahunTerbit);
         System.out.println("Harga       : " + harga);
         System.out.println("Stok        : " + stok);
-
         System.out.println("Kategori    : " + kategori.getNamaKategori());
     }
 }

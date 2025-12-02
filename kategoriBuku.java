@@ -1,10 +1,10 @@
-public class kategoriBuku {
+public class KategoriBuku {
 
     private String idKategori;
     private String namaKategori;
     private String deskripsi;
 
-    public kategoriBuku(String idKategori, String namaKategori, String deskripsi) {
+    public KategoriBuku(String idKategori, String namaKategori, String deskripsi) {
         this.idKategori = idKategori;
         this.namaKategori = namaKategori;
         this.deskripsi = deskripsi;
