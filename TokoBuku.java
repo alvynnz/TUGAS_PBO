@@ -40,5 +40,13 @@ public class TokoBuku {
     public List<Transaksi_penjualan> getRiwayatTransaksi() {
         return riwayatTransaksi;
     }
+
+    public List<Buku> getInventoriBuku() {
+        return inventoriBuku;
+    }
+    
+    public List<Pelanggan> getDaftarPelanggan() {
+        return daftarPelanggan;
+    }
 }
 

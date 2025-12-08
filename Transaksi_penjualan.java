@@ -41,4 +41,8 @@ public class Transaksi_penjualan {
 
         System.out.println("\nTOTAL BAYAR : " + hitungTotal());
     }
+
+    public ArrayList<Detail_transaksi> getListDetail() {
+        return listDetail;
+    }
 }
