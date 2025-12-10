@@ -13,26 +13,21 @@ public class Menu {
     public Menu() {
         input = new Scanner(System.in);
         tokoBuku = new TokoBuku();
-        
-        // Inisialisasi data awal
+
         inisialisasiData();
     }
     
     private void inisialisasiData() {
-        // Membuat kategori buku
         KategoriBuku fiksi = new KategoriBuku("K001", "Fiksi", "Buku-buku cerita fiksi");
         KategoriBuku nonFiksi = new KategoriBuku("K002", "Non-Fiksi", "Buku-buku pengetahuan");
         
-        // Menambahkan buku ke inventori
         tokoBuku.tambahBuku(new Buku("B001", "Laskar Pelangi", "Andrea Hirata", "Bentang Pustaka", 2005, 75000, 10, fiksi));
         tokoBuku.tambahBuku(new Buku("B002", "Sapiens", "Yuval Noah Harari", "Gramedia", 2017, 120000, 5, nonFiksi));
         tokoBuku.tambahBuku(new Buku("B003", "Bumi Manusia", "Pramoedya Ananta Toer", "Hasta Mitra", 1980, 85000, 7, fiksi));
         
-        // Menambahkan pelanggan
         tokoBuku.tambahPelanggan(new Pelanggan(1, "Ahmad Fadli", "Jakarta", "08123456789"));
         tokoBuku.tambahPelanggan(new Pelanggan(2, "Siti Nurhaliza", "Bandung", "08234567890"));
         
-        // Membuat user kasir
         user = new UserSystem(1, "admin", "admin123", "Kasir");
         kasirAktif = new Kasir(1, "Admin Kasir", user);
     }
@@ -52,7 +47,7 @@ public class Menu {
             System.out.print("Pilih menu: ");
 
             pilihan = input.nextInt();
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
 
             switch (pilihan) {
                 case 1:
@@ -90,7 +85,7 @@ public class Menu {
             System.out.print("Pilih menu: ");
             
             pilihan = input.nextInt();
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
             
             switch (pilihan) {
                 case 1:
@@ -137,15 +132,14 @@ public class Menu {
         
         System.out.print("Stok: ");
         int stok = input.nextInt();
-        input.nextLine(); // Membersihkan buffer
+        input.nextLine();
         
-        // Tampilkan kategori yang tersedia
         System.out.println("\nKategori yang tersedia:");
         System.out.println("1. Fiksi");
         System.out.println("2. Non-Fiksi");
         System.out.print("Pilih kategori: ");
         int pilihanKategori = input.nextInt();
-        input.nextLine(); // Membersihkan buffer
+        input.nextLine();
         
         KategoriBuku kategori;
         if (pilihanKategori == 1) {
@@ -163,8 +157,6 @@ public class Menu {
     private void lihatSemuaBuku() {
         System.out.println("\n--- Daftar Buku ---");
         
-        // Untuk demo, kita akan menampilkan beberapa buku yang ada di toko
-        // Dalam implementasi nyata, kita perlu method getInventoriBuku() di TokoBuku
         System.out.println("ID\tJudul\t\tPenulis\t\tHarga\tStok");
         System.out.println("------------------------------------------------------------");
         
@@ -236,7 +228,7 @@ public class Menu {
             if (stokBaru >= 0) {
                 buku.setStok(stokBaru);
             }
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
             
             System.out.println("Informasi buku berhasil diperbarui!");
             buku.tampilkanDetail();
@@ -258,7 +250,7 @@ public class Menu {
             System.out.print("Pilih menu: ");
             
             pilihan = input.nextInt();
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
             
             switch (pilihan) {
                 case 1:
@@ -287,7 +279,7 @@ public class Menu {
         
         System.out.print("ID Pelanggan: ");
         int idPelanggan = input.nextInt();
-        input.nextLine(); // Membersihkan buffer
+        input.nextLine();
         
         System.out.print("Nama: ");
         String nama = input.nextLine();
@@ -307,12 +299,9 @@ public class Menu {
     private void lihatSemuaPelanggan() {
         System.out.println("\n--- Daftar Pelanggan ---");
         
-        // Untuk demo, kita akan menampilkan beberapa pelanggan yang ada di toko
-        // Dalam implementasi nyata, kita perlu method getDaftarPelanggan() di TokoBuku
         System.out.println("ID\tNama\t\tAlamat\t\tNo Telepon");
         System.out.println("------------------------------------------------------------");
         
-        // Menampilkan 2 pelanggan contoh
         Pelanggan pelanggan1 = new Pelanggan(1, "Ahmad Fadli", "Jakarta", "08123456789");
         System.out.println(pelanggan1.getIdPelanggan() + "\t" + pelanggan1.getNama() + "\t\t" + 
                           pelanggan1.getAlamat() + "\t" + pelanggan1.getNoTelepon());
@@ -327,8 +316,6 @@ public class Menu {
         System.out.print("Masukkan nama pelanggan: ");
         String nama = input.nextLine();
         
-        // Dalam implementasi nyata, kita perlu method cariPelanggan() di TokoBuku
-        // Untuk demo, kita akan mencari secara manual
         if (nama.equalsIgnoreCase("Ahmad Fadli")) {
             Pelanggan pelanggan = new Pelanggan(1, "Ahmad Fadli", "Jakarta", "08123456789");
             System.out.println(pelanggan.getInfoPelanggan());
@@ -345,8 +332,6 @@ public class Menu {
         System.out.print("Masukkan nama pelanggan yang akan diupdate: ");
         String nama = input.nextLine();
         
-        // Dalam implementasi nyata, kita perlu method cariPelanggan() di TokoBuku
-        // Untuk demo, kita akan mencari secara manual
         Pelanggan pelanggan = null;
         if (nama.equalsIgnoreCase("Ahmad Fadli")) {
             pelanggan = new Pelanggan(1, "Ahmad Fadli", "Jakarta", "08123456789");
@@ -394,7 +379,7 @@ public class Menu {
             System.out.print("Pilih menu: ");
             
             pilihan = input.nextInt();
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
             
             switch (pilihan) {
                 case 1:
@@ -412,14 +397,11 @@ public class Menu {
     private void buatTransaksi() {
         System.out.println("\n--- Buat Transaksi Baru ---");
         
-        // Generate kode transaksi
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         String kodeTransaksi = "TRX-" + sdf.format(new Date());
         
-        // Buat objek transaksi
         Transaksi_penjualan transaksi = new Transaksi_penjualan(kodeTransaksi, kasirAktif.getNamaKasir());
         
-        // Tambahkan detail transaksi
         int pilihan;
         do {
             System.out.println("\n--- Tambah Item ke Transaksi ---");
@@ -433,14 +415,12 @@ public class Menu {
                 
                 System.out.print("Masukkan jumlah beli: ");
                 int jumlahBeli = input.nextInt();
-                input.nextLine(); // Membersihkan buffer
+                input.nextLine();
                 
                 if (jumlahBeli <= buku.getStok()) {
-                    // Tambahkan detail transaksi
                     Detail_transaksi detail = new Detail_transaksi(buku, jumlahBeli);
                     transaksi.tambahDetail(detail);
                     
-                    // Update stok
                     tokoBuku.perbaruiStok(buku, jumlahBeli);
                     
                     System.out.println("Item berhasil ditambahkan ke transaksi!");
@@ -453,14 +433,12 @@ public class Menu {
             
             System.out.print("Tambah item lagi? (1=Ya, 0=Tidak): ");
             pilihan = input.nextInt();
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
         } while (pilihan == 1);
         
-        // Tampilkan detail transaksi
         System.out.println("\n--- Detail Transaksi ---");
         transaksi.tampilkanTransaksi();
         
-        // Simpan transaksi
         tokoBuku.prosesTransaksi(transaksi);
     }
 
@@ -475,7 +453,7 @@ public class Menu {
             System.out.print("Pilih menu: ");
             
             pilihan = input.nextInt();
-            input.nextLine(); // Membersihkan buffer
+            input.nextLine();
             
             switch (pilihan) {
                 case 1:
@@ -524,7 +502,6 @@ public class Menu {
             System.out.println("Belum ada transaksi hari ini!");
         } else {
             for (Transaksi_penjualan transaksi : riwayat) {
-                // Dalam implementasi nyata, kita perlu filter berdasarkan tanggal
                 transaksi.tampilkanTransaksi();
                 System.out.println("-------------------------------------");
                 

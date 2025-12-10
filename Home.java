@@ -1,7 +1,8 @@
 public class Home {
-
     public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.tampilkanMenuUtama();
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            LoginFrame login = new LoginFrame();
+            login.setVisible(true);
+        });
     }
 }
