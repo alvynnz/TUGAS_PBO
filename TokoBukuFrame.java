@@ -169,10 +169,18 @@ Collections.addAll(masterPenerbit,
         JPanel tabPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 16, 8));
         tabPanel.setOpaque(false);
 
-        JToggleButton tabBuku = createTabButton("Buku");
-        JToggleButton tabPelanggan = createTabButton("Pelanggan");
-        JToggleButton tabTransaksi = createTabButton("Transaksi");
-        JToggleButton tabLaporan = createTabButton("Laporan");
+    JToggleButton tabBuku = createTabButton("Buku");
+    JToggleButton tabPelanggan = createTabButton("Pelanggan");
+    JToggleButton tabTransaksi = createTabButton("Transaksi");
+    JToggleButton tabLaporan = createTabButton("Laporan");
+
+// ✅ kalau PEMBELI, sembunyikan menu Pelanggan & Laporan
+    boolean isPembeli = (currentUser != null && "PEMBELI".equalsIgnoreCase(currentUser.getRole()));
+    if (isPembeli) {
+        tabPelanggan.setVisible(false);
+        tabLaporan.setVisible(false);
+    }
+
 
         ButtonGroup group = new ButtonGroup();
         group.add(tabBuku);
@@ -181,10 +189,15 @@ Collections.addAll(masterPenerbit,
         group.add(tabLaporan);
         tabBuku.setSelected(true);
 
-        tabPanel.add(tabBuku);
-        tabPanel.add(tabPelanggan);
-        tabPanel.add(tabTransaksi);
-        tabPanel.add(tabLaporan);
+tabPanel.add(tabBuku);
+
+if (!(currentUser != null && "PEMBELI".equalsIgnoreCase(currentUser.getRole()))) {
+    tabPanel.add(tabPelanggan);
+    tabPanel.add(tabLaporan);
+}
+
+tabPanel.add(tabTransaksi);
+
 
         JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         profilePanel.setOpaque(false);
