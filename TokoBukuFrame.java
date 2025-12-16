@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.util.*;
 import java.util.List;
 
 public class TokoBukuFrame extends JFrame {
@@ -16,12 +17,16 @@ public class TokoBukuFrame extends JFrame {
     private JTextField txtId;
     private JTextField txtJudul;
     private JTextField txtPenulis;
-    private JTextField txtPenerbit;
     private JTextField txtTahun;
     private JTextField txtHarga;
     private JTextField txtStok;
-    private JTextField txtIdKategori;
-    private JTextField txtNamaKategori;
+
+    private JComboBox<String> cbPenerbit;
+    private JComboBox<KategoriBuku> cbKategori;
+
+    private final List<KategoriBuku> masterKategori = new ArrayList<>();
+private final List<String> masterPenerbit = new ArrayList<>();
+
 
     private CardLayout contentLayout;
     private JPanel contentPanel;
@@ -37,11 +42,11 @@ public class TokoBukuFrame extends JFrame {
     private final Color TABLE_ROW_BG    = new Color(51, 142, 127);
     private final Color TABLE_GRID      = new Color(0, 90, 80);
 
-    private final Font FONT_TITLE    = new Font("Segoe UI", Font.BOLD, 18);
-    private final Font FONT_LABEL_BIG= new Font("Segoe UI", Font.BOLD, 18);
-    private final Font FONT_LABEL    = new Font("Segoe UI", Font.PLAIN, 13);
-    private final Font FONT_TAB      = new Font("Segoe UI", Font.BOLD, 16);
-    private final Font FONT_TABLE    = new Font("Segoe UI", Font.PLAIN, 13);
+    private final Font FONT_TITLE     = new Font("Segoe UI", Font.BOLD, 18);
+    private final Font FONT_LABEL_BIG = new Font("Segoe UI", Font.BOLD, 18);
+    private final Font FONT_LABEL     = new Font("Segoe UI", Font.PLAIN, 13);
+    private final Font FONT_TAB       = new Font("Segoe UI", Font.BOLD, 16);
+    private final Font FONT_TABLE     = new Font("Segoe UI", Font.PLAIN, 13);
 
     public TokoBukuFrame(UserSystem user) {
         this.currentUser = user;
@@ -49,14 +54,13 @@ public class TokoBukuFrame extends JFrame {
 
         if (currentUser != null && "PEMBELI".equalsIgnoreCase(currentUser.getRole())) {
             ImageIcon bgIcon = new ImageIcon("Image/bahlil.jpg");
-            if (bgIcon.getIconWidth() > 0) {
-                userBgImage = bgIcon.getImage();
-            }
+            if (bgIcon.getIconWidth() > 0) userBgImage = bgIcon.getImage();
         }
 
         initDataContoh();
         initUI();
         muatDataKeTabel();
+        refreshMasterDataCombos();
     }
 
     public TokoBukuFrame() {
@@ -64,8 +68,58 @@ public class TokoBukuFrame extends JFrame {
     }
 
     private void initDataContoh() {
-        KategoriBuku fiksi = new KategoriBuku("K001", "Fiksi", "Novel dan cerita fiksi");
-        KategoriBuku nonFiksi = new KategoriBuku("K002", "Non-Fiksi", "Buku pengetahuan");
+        masterKategori.clear();
+        masterKategori.add(new KategoriBuku("K001", "Fiksi", "Novel, cerpen, cerita fiksi"));
+        masterKategori.add(new KategoriBuku("K002", "Non-Fiksi", "Biografi, sejarah, fakta"));
+        masterKategori.add(new KategoriBuku("K003", "Pendidikan", "Pelajaran, modul, akademik"));
+        masterKategori.add(new KategoriBuku("K004", "Referensi", "Kamus, ensiklopedia, panduan"));
+        masterKategori.add(new KategoriBuku("K005", "Hiburan", "Komik, humor, ringan"));
+        masterKategori.add(new KategoriBuku("K006", "Agama", "Kajian, tuntunan, religi"));
+        masterKategori.add(new KategoriBuku("K007", "Anak-anak", "Buku anak, cerita bergambar"));
+        masterKategori.add(new KategoriBuku("K008", "E-book", "Buku digital"));
+
+masterPenerbit.clear();
+Collections.addAll(masterPenerbit,
+        "Greenbook.ID",
+        "Gramedia Pustaka Utama",
+        "Mizan Publishing",
+        "Penerbit Erlangga",
+        "Kepustakaan Populer Gramedia (KPG)",
+        "Bentang Pustaka",
+        "Pustaka Alvabet",
+        "GagasMedia",
+        "Pustaka Hidayah",
+        "Penerbit Republika",
+        "Penerbit Buku Kompas",
+        "Serambi Ilmu Semesta",
+        "Penerbit Ombak",
+        "PT Grasindo",
+        "Kepustakaan Popular Gramedia (KPG Kids)",
+        "PT Elex Media Komputindo",
+        "Qanita",
+        "Media Kita",
+        "Bentang Belia",
+        "Elex Media Komputindo (EMK Press)",
+        "Matahati",
+        "PT Visimedia",
+        "Bentang Budaya",
+        "PT Grafindo Media Pratama",
+        "BIP (Bumi Aksara)",
+        "Penebar Swadaya",
+        "PT RajaGrafindo Persada",
+        "Araska Publisher",
+        "Buku Fixi",
+        "Mahaka Media",
+        "KPG Novel",
+        "Elex Media Komputindo (Level Comics)",
+        "Indiva Media Kreasi",
+        "PT. Gagas Media",
+        "Marjin Kiri"
+);
+
+
+        KategoriBuku fiksi = masterKategori.get(0);
+        KategoriBuku nonFiksi = masterKategori.get(1);
 
         tokoBuku.tambahBuku(new Buku("B001", "Laskar Pelangi", "Andrea Hirata",
                 "Bentang Pustaka", 2005, 75000, 10, fiksi));
@@ -95,8 +149,7 @@ public class TokoBukuFrame extends JFrame {
         logoPanel.setOpaque(false);
 
         JPanel logoBox = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
+            @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(new Color(252, 206, 82));
                 g.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
@@ -137,11 +190,8 @@ public class TokoBukuFrame extends JFrame {
         profilePanel.setOpaque(false);
 
         String profileText = "👤 ";
-        if (currentUser != null) {
-            profileText += currentUser.getUsername() + " (" + currentUser.getRole() + ")";
-        } else {
-            profileText += "Guest";
-        }
+        if (currentUser != null) profileText += currentUser.getUsername() + " (" + currentUser.getRole() + ")";
+        else profileText += "Guest";
         JLabel lblProfile = new JLabel(profileText);
         lblProfile.setFont(FONT_LABEL);
 
@@ -158,22 +208,16 @@ public class TokoBukuFrame extends JFrame {
         contentPanel.setBackground(TEAL_BG);
 
         JPanel bukuPanel;
-        if (currentUser != null &&
-                "PEMBELI".equalsIgnoreCase(currentUser.getRole()) &&
-                userBgImage != null) {
+        if (currentUser != null && "PEMBELI".equalsIgnoreCase(currentUser.getRole()) && userBgImage != null) {
             bukuPanel = createBukuPanel(userBgImage);
         } else {
             bukuPanel = createBukuPanel(null);
         }
 
-        JPanel pelangganPanel = createPlaceholderPanel("Pelanggan");
-        JPanel transaksiPanel = createPlaceholderPanel("Transaksi");
-        JPanel laporanPanel = createPlaceholderPanel("Laporan");
-
         contentPanel.add(bukuPanel, "BUKU");
-        contentPanel.add(pelangganPanel, "PELANGGAN");
-        contentPanel.add(transaksiPanel, "TRANSAKSI");
-        contentPanel.add(laporanPanel, "LAPORAN");
+        contentPanel.add(createPlaceholderPanel("Pelanggan"), "PELANGGAN");
+        contentPanel.add(createPlaceholderPanel("Transaksi"), "TRANSAKSI");
+        contentPanel.add(createPlaceholderPanel("Laporan"), "LAPORAN");
 
         root.add(contentPanel, BorderLayout.CENTER);
 
@@ -185,9 +229,8 @@ public class TokoBukuFrame extends JFrame {
 
     private JPanel createBukuPanel(Image bgImage) {
         JPanel panel;
-        if (bgImage != null) {
-            panel = new BackgroundPanel(bgImage, TEAL_BG, 0.7f);
-        } else {
+        if (bgImage != null) panel = new BackgroundPanel(bgImage, TEAL_BG, 0.7f);
+        else {
             panel = new JPanel();
             panel.setBackground(TEAL_BG);
         }
@@ -211,70 +254,65 @@ public class TokoBukuFrame extends JFrame {
         txtId = new JTextField();
         txtJudul = new JTextField();
         txtPenulis = new JTextField();
-        txtPenerbit = new JTextField();
         txtTahun = new JTextField();
         txtHarga = new JTextField();
         txtStok = new JTextField();
-        txtIdKategori = new JTextField();
-        txtNamaKategori = new JTextField();
 
         styleField(txtId);
         styleField(txtJudul);
         styleField(txtPenulis);
-        styleField(txtPenerbit);
         styleField(txtTahun);
         styleField(txtHarga);
         styleField(txtStok);
-        styleField(txtIdKategori);
-        styleField(txtNamaKategori);
+
+        cbPenerbit = new JComboBox<>();
+        styleComboString(cbPenerbit);
+
+        cbKategori = new JComboBox<>();
+        styleComboKategori(cbKategori);
+
+        cbKategori.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                          boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof KategoriBuku) {
+                    KategoriBuku k = (KategoriBuku) value;
+                    String text = k.getNamaKategori();
+                    if (text == null || text.isEmpty()) text = "-- Pilih Kategori --";
+                    setText(text);
+                }
+                return this;
+            }
+        });
 
         gbc.weightx = 0;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        addLabelBig(formCard, gbc, "ID Buku");
-        gbc.gridy++;
-        addLabelBig(formCard, gbc, "Penulis");
-        gbc.gridy++;
-        addLabelBig(formCard, gbc, "Tahun Terbit");
-        gbc.gridy++;
-        addLabelBig(formCard, gbc, "Stok");
-        gbc.gridy++;
-        addLabelBig(formCard, gbc, "Nama Kategori");
+        gbc.gridy = 0; addLabelBig(formCard, gbc, "ID Buku");
+        gbc.gridy++;    addLabelBig(formCard, gbc, "Penulis");
+        gbc.gridy++;    addLabelBig(formCard, gbc, "Tahun Terbit");
+        gbc.gridy++;    addLabelBig(formCard, gbc, "Stok");
 
         gbc.weightx = 1;
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        formCard.add(txtId, gbc);
-        gbc.gridy++;
-        formCard.add(txtPenulis, gbc);
-        gbc.gridy++;
-        formCard.add(txtTahun, gbc);
-        gbc.gridy++;
-        formCard.add(txtStok, gbc);
-        gbc.gridy++;
-        formCard.add(txtNamaKategori, gbc);
+        gbc.gridy = 0; formCard.add(txtId, gbc);
+        gbc.gridy++;    formCard.add(txtPenulis, gbc);
+        gbc.gridy++;    formCard.add(txtTahun, gbc);
+        gbc.gridy++;    formCard.add(txtStok, gbc);
 
         gbc.weightx = 0;
         gbc.gridx = 2;
-        gbc.gridy = 0;
-        addLabelNormal(formCard, gbc, "Judul");
-        gbc.gridy++;
-        addLabelNormal(formCard, gbc, "Penerbit");
-        gbc.gridy++;
-        addLabelNormal(formCard, gbc, "Harga");
-        gbc.gridy++;
-        addLabelNormal(formCard, gbc, "ID Kategori");
+        gbc.gridy = 0; addLabelNormal(formCard, gbc, "Judul");
+        gbc.gridy++;    addLabelNormal(formCard, gbc, "Penerbit");
+        gbc.gridy++;    addLabelNormal(formCard, gbc, "Harga");
+        gbc.gridy++;    addLabelNormal(formCard, gbc, "Kategori");
 
         gbc.weightx = 1;
         gbc.gridx = 3;
-        gbc.gridy = 0;
-        formCard.add(txtJudul, gbc);
-        gbc.gridy++;
-        formCard.add(txtPenerbit, gbc);
-        gbc.gridy++;
-        formCard.add(txtHarga, gbc);
-        gbc.gridy++;
-        formCard.add(txtIdKategori, gbc);
+        gbc.gridy = 0; formCard.add(txtJudul, gbc);
+        gbc.gridy++;    formCard.add(cbPenerbit, gbc);
+        gbc.gridy++;    formCard.add(txtHarga, gbc);
+        gbc.gridy++;    formCard.add(cbKategori, gbc);
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         actionPanel.setOpaque(false);
@@ -301,10 +339,7 @@ public class TokoBukuFrame extends JFrame {
 
         String[] kolom = {"ID", "Judul", "Penulis", "Penerbit", "Tahun", "Harga", "Stok", "kategori"};
         modelBuku = new DefaultTableModel(kolom, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+            @Override public boolean isCellEditable(int row, int column) { return false; }
         };
         tblBuku = new JTable(modelBuku);
         tblBuku.setFont(FONT_TABLE);
@@ -328,10 +363,7 @@ public class TokoBukuFrame extends JFrame {
         boolean isUserWithBg = (currentUser != null &&
                 "PEMBELI".equalsIgnoreCase(currentUser.getRole()) &&
                 bgImage != null);
-
-        if (isUserWithBg) {
-            makeTableTransparent(tblBuku, scroll);
-        }
+        if (isUserWithBg) makeTableTransparent(tblBuku, scroll);
 
         panel.add(tableWrapper, BorderLayout.CENTER);
 
@@ -341,9 +373,133 @@ public class TokoBukuFrame extends JFrame {
 
         btnAdd.addActionListener(e -> tambahBukuDariForm());
         btnDelete.addActionListener(e -> hapusBukuTerpilih());
-        btnRefresh.addActionListener(e -> muatDataKeTabel());
+        btnRefresh.addActionListener(e -> {
+            muatDataKeTabel();
+            refreshMasterDataCombos();
+        });
 
         return panel;
+    }
+
+private void refreshMasterDataCombos() {
+
+    DefaultComboBoxModel<String> penerbitModel = new DefaultComboBoxModel<>();
+    penerbitModel.addElement("-- Pilih Penerbit --");
+    for (String p : masterPenerbit) {
+        penerbitModel.addElement(p);
+    }
+    cbPenerbit.setModel(penerbitModel);
+
+    DefaultComboBoxModel<KategoriBuku> kategoriModel = new DefaultComboBoxModel<>();
+    kategoriModel.addElement(new KategoriBuku("", "-- Pilih Kategori --", ""));
+    for (KategoriBuku k : masterKategori) {
+        kategoriModel.addElement(k);
+    }
+    cbKategori.setModel(kategoriModel);
+
+    cbPenerbit.setSelectedIndex(0);
+    cbKategori.setSelectedIndex(0);
+}
+
+    
+
+    private void muatDataKeTabel() {
+        modelBuku.setRowCount(0);
+        List<Buku> list = tokoBuku.getInventoriBuku();
+        for (Buku b : list) {
+            modelBuku.addRow(new Object[]{
+                    b.getIdBuku(),
+                    b.getJudul(),
+                    b.getPenulis(),
+                    b.getPenerbit(),
+                    b.getTahunTerbit(),
+                    b.getHarga(),
+                    b.getStok(),
+                    b.getKategori().getNamaKategori()
+            });
+        }
+    }
+
+    private void tambahBukuDariForm() {
+        try {
+            String id = txtId.getText().trim();
+            String judul = txtJudul.getText().trim();
+            String penulis = txtPenulis.getText().trim();
+            int tahun = Integer.parseInt(txtTahun.getText().trim());
+            double harga = Double.parseDouble(txtHarga.getText().trim());
+            int stok = Integer.parseInt(txtStok.getText().trim());
+
+            if (id.isEmpty() || judul.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "ID dan Judul wajib diisi.",
+                        "Validasi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String penerbit = (String) cbPenerbit.getSelectedItem();
+            if (penerbit == null || penerbit.startsWith("--")) {
+                JOptionPane.showMessageDialog(this, "Pilih penerbit dulu.",
+                        "Validasi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            KategoriBuku kategori = (KategoriBuku) cbKategori.getSelectedItem();
+            if (kategori == null || kategori.getNamaKategori() == null ||
+                    kategori.getNamaKategori().trim().isEmpty() ||
+                    kategori.getNamaKategori().startsWith("--")) {
+                JOptionPane.showMessageDialog(this, "Pilih kategori dulu.",
+                        "Validasi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Buku b = new Buku(id, judul, penulis, penerbit, tahun, harga, stok, kategori);
+            tokoBuku.tambahBuku(b);
+
+            muatDataKeTabel();
+            refreshMasterDataCombos();
+            bersihkanForm();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Tahun, Harga, dan Stok harus angka.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void hapusBukuTerpilih() {
+        int row = tblBuku.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Pilih dulu buku yang akan dihapus.",
+                    "Info", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        String idBuku = (String) modelBuku.getValueAt(row, 0);
+        List<Buku> list = tokoBuku.getInventoriBuku();
+        Buku target = null;
+        for (Buku b : list) {
+            if (b.getIdBuku().equals(idBuku)) { target = b; break; }
+        }
+        if (target != null) {
+            int konfirmasi = JOptionPane.showConfirmDialog(this,
+                    "Yakin mau hapus \"" + target.getJudul() + "\" ?",
+                    "Konfirmasi", JOptionPane.YES_NO_OPTION);
+            if (konfirmasi == JOptionPane.YES_OPTION) {
+                list.remove(target);
+                muatDataKeTabel();
+                refreshMasterDataCombos();
+            }
+        }
+    }
+
+    private void bersihkanForm() {
+        txtId.setText("");
+        txtJudul.setText("");
+        txtPenulis.setText("");
+        txtTahun.setText("");
+        txtHarga.setText("");
+        txtStok.setText("");
+        if (cbPenerbit != null) cbPenerbit.setSelectedIndex(0);
+        if (cbKategori != null) cbKategori.setSelectedIndex(0);
     }
 
     private JPanel createPlaceholderPanel(String title) {
@@ -368,16 +524,12 @@ public class TokoBukuFrame extends JFrame {
                 BorderFactory.createEmptyBorder(6, 20, 6, 20)
         ));
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.addChangeListener(e -> {
-            if (btn.isSelected()) btn.setBackground(Color.WHITE);
-            else btn.setBackground(TAB_BG);
-        });
+        btn.addChangeListener(e -> btn.setBackground(btn.isSelected() ? Color.WHITE : TAB_BG));
         return btn;
     }
 
     private JButton createIconButton(String imageFileName) {
         ImageIcon icon = new ImageIcon("Image/" + imageFileName);
-
         if (icon.getIconWidth() <= 0) {
             JButton fallback = new JButton("?");
             fallback.setFont(new Font("Segoe UI", Font.BOLD, 20));
@@ -388,17 +540,13 @@ public class TokoBukuFrame extends JFrame {
             fallback.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             return fallback;
         }
-
         Image img = icon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(img);
-
-        JButton btn = new JButton(scaledIcon);
+        JButton btn = new JButton(new ImageIcon(img));
         btn.setPreferredSize(new Dimension(60, 60));
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
         btn.setBackground(Color.WHITE);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setContentAreaFilled(true);
         return btn;
     }
 
@@ -408,6 +556,25 @@ public class TokoBukuFrame extends JFrame {
         field.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 190, 190)),
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)
+        ));
+    }
+
+    private void styleComboString(JComboBox<String> combo) {
+        combo.setFont(FONT_LABEL);
+        combo.setBackground(Color.WHITE);
+        combo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 190, 190)),
+                BorderFactory.createEmptyBorder(3, 6, 3, 6)
+        ));
+        combo.setPrototypeDisplayValue("XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    }
+
+    private void styleComboKategori(JComboBox<KategoriBuku> combo) {
+        combo.setFont(FONT_LABEL);
+        combo.setBackground(Color.WHITE);
+        combo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 190, 190)),
+                BorderFactory.createEmptyBorder(3, 6, 3, 6)
         ));
     }
 
@@ -442,19 +609,12 @@ public class TokoBukuFrame extends JFrame {
             super.paintComponent(g);
             if (bg != null) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                int w = getWidth();
-                int h = getHeight();
-
+                int w = getWidth(), h = getHeight();
                 g2.drawImage(bg, 0, 0, w, h, this);
 
-                if (overlayColor != null && overlayAlpha > 0f && overlayAlpha <= 1f) {
-                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, overlayAlpha));
-                    g2.setColor(overlayColor);
-                    g2.fillRect(0, 0, w, h);
-                }
-
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, overlayAlpha));
+                g2.setColor(overlayColor);
+                g2.fillRect(0, 0, w, h);
                 g2.dispose();
             }
         }
@@ -474,15 +634,10 @@ public class TokoBukuFrame extends JFrame {
                                                            boolean isSelected, boolean hasFocus,
                                                            int row, int column) {
                 Component c = super.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, column);
-                if (c instanceof JComponent) {
-                    JComponent jc = (JComponent) c;
-                    if (isSelected) {
-                        jc.setBackground(selectedBg);
-                    } else {
-                        jc.setBackground(normalBg);
-                    }
-                    jc.setForeground(Color.WHITE);
+                if (c instanceof JComponent jc) {
                     jc.setOpaque(true);
+                    jc.setBackground(isSelected ? selectedBg : normalBg);
+                    jc.setForeground(Color.WHITE);
                 }
                 return c;
             }
@@ -493,90 +648,24 @@ public class TokoBukuFrame extends JFrame {
         }
     }
 
-    private void muatDataKeTabel() {
-        modelBuku.setRowCount(0);
-        List<Buku> list = tokoBuku.getInventoriBuku();
-        for (Buku b : list) {
-            modelBuku.addRow(new Object[]{
-                    b.getIdBuku(),
-                    b.getJudul(),
-                    b.getPenulis(),
-                    b.getPenerbit(),
-                    b.getTahunTerbit(),
-                    b.getHarga(),
-                    b.getStok(),
-                    b.getKategori().getNamaKategori()
-            });
+    private void applyKategoriLogic() {
+    KategoriBuku k = (KategoriBuku) cbKategori.getSelectedItem();
+
+    if (k != null && "E-book".equalsIgnoreCase(k.getNamaKategori())) {
+        cbPenerbit.setModel(new DefaultComboBoxModel<>(
+                new String[]{"Digital / E-book"}
+        ));
+        cbPenerbit.setEnabled(false);
+    } else {
+        cbPenerbit.setEnabled(true);
+
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("-- Pilih Penerbit --");
+        for (String p : masterPenerbit) {
+            model.addElement(p);
         }
+        cbPenerbit.setModel(model);
     }
+}
 
-    private void tambahBukuDariForm() {
-        try {
-            String id = txtId.getText().trim();
-            String judul = txtJudul.getText().trim();
-            String penulis = txtPenulis.getText().trim();
-            String penerbit = txtPenerbit.getText().trim();
-            int tahun = Integer.parseInt(txtTahun.getText().trim());
-            double harga = Double.parseDouble(txtHarga.getText().trim());
-            int stok = Integer.parseInt(txtStok.getText().trim());
-            String idKat = txtIdKategori.getText().trim();
-            String namaKat = txtNamaKategori.getText().trim();
-
-            if (id.isEmpty() || judul.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "ID dan Judul wajib diisi.",
-                        "Validasi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            KategoriBuku kategori = new KategoriBuku(idKat, namaKat, "");
-            Buku b = new Buku(id, judul, penulis, penerbit, tahun, harga, stok, kategori);
-            tokoBuku.tambahBuku(b);
-            muatDataKeTabel();
-            bersihkanForm();
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Tahun, Harga, dan Stok harus angka.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void hapusBukuTerpilih() {
-        int row = tblBuku.getSelectedRow();
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this,
-                    "Pilih dulu buku yang akan dihapus.",
-                    "Info", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        String idBuku = (String) modelBuku.getValueAt(row, 0);
-        List<Buku> list = tokoBuku.getInventoriBuku();
-        Buku target = null;
-        for (Buku b : list) {
-            if (b.getIdBuku().equals(idBuku)) {
-                target = b;
-                break;
-            }
-        }
-        if (target != null) {
-            int konfirmasi = JOptionPane.showConfirmDialog(this,
-                    "Yakin mau hapus \"" + target.getJudul() + "\" ?",
-                    "Konfirmasi", JOptionPane.YES_NO_OPTION);
-            if (konfirmasi == JOptionPane.YES_OPTION) {
-                list.remove(target);
-                muatDataKeTabel();
-            }
-        }
-    }
-
-    private void bersihkanForm() {
-        txtId.setText("");
-        txtJudul.setText("");
-        txtPenulis.setText("");
-        txtPenerbit.setText("");
-        txtTahun.setText("");
-        txtHarga.setText("");
-        txtStok.setText("");
-        txtIdKategori.setText("");
-        txtNamaKategori.setText("");
-    }
 }

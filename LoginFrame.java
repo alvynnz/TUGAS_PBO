@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,8 @@ public class LoginFrame extends JFrame {
     private JButton btnLogin, btnSignUp;
 
     private List<UserSystem> users = new ArrayList<>();
+
+    private Image bookImage;
 
     public LoginFrame() {
         setTitle("TOKO buku GEN Z - Login");
@@ -24,7 +25,6 @@ public class LoginFrame extends JFrame {
     }
 
     private void initDummyUsers() {
-
         users.add(new UserSystem(1, "admin", "admin123", "ADMIN"));
         users.add(new UserSystem(2, "user", "user123", "PEMBELI"));
     }
@@ -39,7 +39,7 @@ public class LoginFrame extends JFrame {
 
     private void initComponents() {
         JPanel root = new JPanel(new BorderLayout());
-        root.setBackground(new Color(41, 117, 112));
+        root.setBackground(new Color(41, 117, 112)); // teal
         setContentPane(root);
 
         JPanel topBar = new JPanel(new BorderLayout());
@@ -152,6 +152,11 @@ public class LoginFrame extends JFrame {
 
         middle.add(left);
 
+        ImageIcon bookIcon = new ImageIcon("Image/buku.png");
+        if (bookIcon.getIconWidth() > 0) {
+            bookImage = bookIcon.getImage();
+        }
+
         JPanel right = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -163,25 +168,37 @@ public class LoginFrame extends JFrame {
                 int h = getHeight();
 
                 g2.setColor(new Color(252, 206, 82));
-                g2.fillOval(w / 4, h / 6, w / 2 + 100, h / 2 + 60);
+                int blobW = (int) (w * 0.70);
+                int blobH = (int) (h * 0.75);
+                int blobX = w - blobW - 40;
+                int blobY = (h - blobH) / 2;
+                g2.fillOval(blobX, blobY, blobW, blobH);
 
-                g2.fillOval(w / 4 - 40, h / 5 + 40, 40, 40);
-                g2.fillOval(w / 4 + 40, h / 5 - 30, 28, 28);
-                g2.fillOval(w / 4 + 220, h / 5 - 10, 24, 24);
+                g2.fillOval(blobX - 55, blobY + 70, 40, 40);
+                g2.fillOval(blobX + 30, blobY - 35, 28, 28);
+                g2.fillOval(blobX + 190, blobY - 15, 24, 24);
 
-                int bx = w / 3;
-                int by = h / 3;
-                int bw = 160;
-                int bh = 40;
+                if (bookImage != null) {
+                    int targetW = (int) (blobW * 0.85); // lebih besar
+                    int targetH = (int) (blobH * 0.85);
 
-                g2.setColor(Color.WHITE);
-                g2.fillRoundRect(bx, by, bw, bh, 10, 10);
-                g2.setColor(new Color(120, 160, 255));
-                g2.fillRoundRect(bx + 10, by + 8, bw, bh, 10, 10);
-                g2.setColor(new Color(240, 90, 90));
-                g2.fillRoundRect(bx + 20, by + 16, bw, bh, 10, 10);
+                    int imgW = bookImage.getWidth(this);
+                    int imgH = bookImage.getHeight(this);
+
+                    if (imgW > 0 && imgH > 0) {
+                        double r = Math.min((double) targetW / imgW, (double) targetH / imgH);
+                        int drawW = (int) (imgW * r);
+                        int drawH = (int) (imgH * r);
+
+                        int drawX = blobX + (blobW - drawW) / 2;
+                        int drawY = blobY + (blobH - drawH) / 2 - 20; // naik sedikit biar estetik
+
+                        g2.drawImage(bookImage, drawX, drawY, drawW, drawH, this);
+                    }
+                }
             }
         };
+
         right.setOpaque(false);
         right.setBorder(BorderFactory.createEmptyBorder(40, 20, 40, 40));
         middle.add(right);
@@ -192,8 +209,7 @@ public class LoginFrame extends JFrame {
     }
 
     private JPanel createInputBox(String title, JComponent field) {
-        JPanel box = new JPanel();
-        box.setLayout(new BorderLayout());
+        JPanel box = new JPanel(new BorderLayout());
         box.setBackground(Color.WHITE);
         box.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
@@ -228,7 +244,7 @@ public class LoginFrame extends JFrame {
 
         if (username.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Isi dulu email & sandi.",
+                    "Isi dulu Gmail & Sandi.",
                     "Validasi", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -247,7 +263,7 @@ public class LoginFrame extends JFrame {
         }
 
         JOptionPane.showMessageDialog(this,
-                "Email / sandi salah.",
+                "Gmail / Sandi salah.",
                 "Gagal Login", JOptionPane.ERROR_MESSAGE);
     }
 }
