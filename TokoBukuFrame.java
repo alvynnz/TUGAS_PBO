@@ -524,57 +524,86 @@ public class TokoBukuFrame extends JFrame {
         }
     }
 
-    private void tambahBukuDariForm() {
-        try {
-            String id = txtId.getText().trim();
-            String judul = txtJudul.getText().trim();
-            String penulis = txtPenulis.getText().trim();
+private void tambahBukuDariForm() {
+    try {
+        String id = txtId.getText().trim();
+        String judul = txtJudul.getText().trim();
+        String penulis = txtPenulis.getText().trim();
+        String tahunStr = txtTahun.getText().trim();
+        String hargaStr = txtHarga.getText().trim();
+        String stokStr  = txtStok.getText().trim();
 
-            if (id.isEmpty() || judul.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "ID dan Judul wajib diisi.",
-                        "Validasi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            Integer tahun = parseIntSafe(txtTahun.getText().trim());
-            Integer stok = parseIntSafe(txtStok.getText().trim());
-            Double harga = parseDoubleSafe(txtHarga.getText().trim());
-
-            if (tahun == null || stok == null || harga == null) {
-                JOptionPane.showMessageDialog(this, "Tahun, Harga, dan Stok harus angka.",
-                        "Validasi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            String penerbit = (String) cbPenerbit.getSelectedItem();
-            if (penerbit == null || penerbit.startsWith("--")) {
-                JOptionPane.showMessageDialog(this, "Pilih penerbit dulu.",
-                        "Validasi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            KategoriBuku kategori = (KategoriBuku) cbKategori.getSelectedItem();
-            if (kategori == null || kategori.getNamaKategori() == null ||
-                    kategori.getNamaKategori().trim().isEmpty() ||
-                    kategori.getNamaKategori().startsWith("--")) {
-                JOptionPane.showMessageDialog(this, "Pilih kategori dulu.",
-                        "Validasi", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            Buku b = new Buku(id, judul, penulis, penerbit, tahun, harga, stok, kategori);
-            tokoBuku.tambahBuku(b);
-
-            muatDataKeTabel();
-            refreshMasterDataCombos();
-            bersihkanForm();
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Terjadi error saat menambah buku.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        // ===== VALIDASI WAJIB =====
+        if (id.isEmpty() || judul.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "ID dan Judul wajib diisi.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        // ✅ Validasi ID unik
+        if (isIdBukuSudahAda(id)) {
+            JOptionPane.showMessageDialog(this,
+                    "ID Buku \"" + id + "\" sudah digunakan. Gunakan ID lain.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // ===== VALIDASI ANGKA (tahun/harga/stok tidak boleh huruf) =====
+        if (!tahunStr.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Tahun harus berupa angka.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!hargaStr.matches("\\d+(\\.\\d+)?")) { // boleh 75000 atau 75000.5
+            JOptionPane.showMessageDialog(this, "Harga harus berupa angka.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!stokStr.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Stok harus berupa angka.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int tahun = Integer.parseInt(tahunStr);
+        double harga = Double.parseDouble(hargaStr);
+        int stok = Integer.parseInt(stokStr);
+
+        String penerbit = (String) cbPenerbit.getSelectedItem();
+        if (penerbit == null || penerbit.startsWith("--")) {
+            JOptionPane.showMessageDialog(this, "Pilih penerbit dulu.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        KategoriBuku kategori = (KategoriBuku) cbKategori.getSelectedItem();
+        if (kategori == null || kategori.getNamaKategori() == null ||
+                kategori.getNamaKategori().trim().isEmpty() ||
+                kategori.getNamaKategori().startsWith("--")) {
+            JOptionPane.showMessageDialog(this, "Pilih kategori dulu.",
+                    "Validasi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // ===== SIMPAN =====
+        Buku b = new Buku(id, judul, penulis, penerbit, tahun, harga, stok, kategori);
+        tokoBuku.tambahBuku(b);
+
+        // refresh UI
+        muatDataKeTabel();
+        refreshMasterDataCombos();
+        bersihkanForm();
+
+        // kalau kamu punya laporan admin
+        try { refreshLaporan(); } catch (Exception ignored) {}
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this,
+                "Input tidak valid. Periksa kembali data.",
+                "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+
 
     private void hapusBukuTerpilih() {
         int row = tblBuku.getSelectedRow();
@@ -902,6 +931,7 @@ public class TokoBukuFrame extends JFrame {
                 return;
             }
 
+
             // validasi stok & kurangi stok
             for (int i = 0; i < modelKeranjang.getRowCount(); i++) {
                 String id = modelKeranjang.getValueAt(i, 0).toString();
@@ -1032,6 +1062,15 @@ public class TokoBukuFrame extends JFrame {
         if (currentUser == null) return "Guest";
         return currentUser.getUsername();
     }
+
+    // ✅ cek ID buku sudah dipakai atau belum
+private boolean isIdBukuSudahAda(String id) {
+    for (Buku b : tokoBuku.getInventoriBuku()) {
+        if (b.getIdBuku().equalsIgnoreCase(id)) return true;
+    }
+    return false;
+}
+
 
     // =========================
     // PANEL PELANGGAN
