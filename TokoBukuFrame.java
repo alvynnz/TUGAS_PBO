@@ -413,16 +413,16 @@ public class TokoBukuFrame extends JFrame {
         gbc.weightx = 0;
         gbc.gridx = 2;
         gbc.gridy = 0; addLabelNormal(formCard, gbc, "Judul");
-        gbc.gridy++;    addLabelNormal(formCard, gbc, "Penerbit");
+        gbc.gridy++;    addLabelNormal(formCard, gbc, "Kategori");   // ⬅ pindah ke atas
         gbc.gridy++;    addLabelNormal(formCard, gbc, "Harga");
-        gbc.gridy++;    addLabelNormal(formCard, gbc, "Kategori");
+        gbc.gridy++;    addLabelNormal(formCard, gbc, "Penerbit");   // ⬅ pindah ke bawah
 
         gbc.weightx = 1;
         gbc.gridx = 3;
         gbc.gridy = 0; formCard.add(txtJudul, gbc);
-        gbc.gridy++;    formCard.add(cbPenerbit, gbc);
+        gbc.gridy++;    formCard.add(cbKategori, gbc);               // ⬅ kategori di sini
         gbc.gridy++;    formCard.add(txtHarga, gbc);
-        gbc.gridy++;    formCard.add(cbKategori, gbc);
+        gbc.gridy++;    formCard.add(cbPenerbit, gbc);               // ⬅ penerbit di sini
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         actionPanel.setOpaque(false);
